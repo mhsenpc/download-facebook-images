@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Download Facebook Images In A Zip File!" />
+    <meta name="author" content="Facebook To blog|Mohsen Shamohammadi" />
+    <link rel="icon" href="../favico.ico" />
+
+    <title>Download Facebook Images In A Zip File!</title>
+
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    
+	<style type="text/css">
+		#tags a:link{
+			color:white;
+		}
+		
+		#tags a:visited {
+			color:white;
+		}
+
+        
+		.container {
+			width: 84%;
+			margin:0 auto;
+			max-width:1140px;
+		}
+
+	</style>
+    
+    <script>
+        function sleep(milliseconds) {
+          var start = new Date().getTime();
+          for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds){
+              break;
+            }
+          }
+        }
+
+
+        function refreshcaptcha(){
+            $(document).ready(function(e) {
+                $("#captchaitem").html('<img src="captcha.php" />');
+                $("#downloadprogress").hide();
+            });
+
+        }
+        
+        function resetareas(){
+            $(document).ready(function(e) {
+                $("#pageidarea").fadeIn(500);
+                $("#captchaarea").fadeIn(500);
+                $("#downloadprogress").hide();
+                $("#downloadarea").hide();
+                $("#resetarea").hide();
+            });
+            
+            refreshcaptcha();
+        }
+        
+		function startdownload(){
+    		$(document).ready(function(e) {
+    				//if fields are empty then return
+    				if($.trim( $("#txtpageid").val())==""){
+    				    $("#txtpageid").focus();
+                        return 0;
+    				}
+                    
+    				if($.trim( $("#txtcaptcha").val())==""){
+    				    $("#txtcaptcha").focus();
+                        return 0;
+    				}
+                        
+    				
+    				var txtpageid=$("#txtpageid").val();
+    				var txtcaptcha=$("#txtcaptcha").val();
+                    
+                    $("#pageidarea").fadeOut(100);
+                    $("#captchaarea").hide(100);
+                    $("#downloadprogress").fadeIn(500);
+    				$.post( "startdownload.php", { pageid: txtpageid, captcha: txtcaptcha })
+
+					  .done(function( data ) {
+							if(data=="captcha_error"){
+                                alert("wrong captcha");
+                                refreshcaptcha();
+                                resetareas();
+                                
+                            }
+                            else{
+                                //set links for browse and download
+                                var siteurl="http://download-facebook-images.fbtoblog.com/images/";
+                                $("#downloadicon").attr("href", siteurl+ data + ".zip");
+                                $("#browseicon").attr("href", siteurl+ data );
+                                $("#progressbar").css("width", "100%");
+                                
+                                $("#downloadarea").fadeIn(500);
+                                $("#resetarea").fadeIn(500);
+                                $("#downloadprogress").hide(100);
+                            }
+                                
+       
+    				});
+                            var i=15;
+                            for(i=15;i<100;i+=0.5){
+                                $("#progressbar").css("width", i+ "%")
+                                
+                            }
+                                
+    			});
+		}
+        
+
+	</script>
+  </head>
+
+  <body>
+      <div class="container">
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+	<div class="row">
+		<div class="col-md-4" > <img src="zip.png" height="64" width="64" /> </div>
+		<div style="width:800px;position:relative;" ><h1><b>Download Facebook images!</b></h1></div>
+	</div>
+
+	</div>
+  </div>
+</nav>
+        <div class="jumbotron">
+		
+		 <div class="row">
+        
+		  
+          <p>Do you like a particular Facebook page? and maybe you went to download all images one by one.</p>
+		  <p>with this program you can download up to 20 images of wanted page in a zip file for free!</p>
+		  <p>to download more images,<a href="http://fbtoblog.com/#contactarea"> Contact Us!</a></p>
+		  <div style="background-color:#666;padding:20px;">
+			  <div class="row" id="pageidarea">
+			  
+				<div class="col-md-4"><p style="color:white;">FaceBook Page Name Or Id:</p></div>
+				<div class="col-md-4">
+				<input type="text" id="txtpageid" name="txtpageid" placeholder="VeryNiceImage" class="form-control" />
+				</div>
+				<div class="col-md-4">
+					<input type="button" onclick="startdownload();" value="Get Images" class="btn btn-primary btn-lg" />
+					 
+				</div>
+			  </div>
+			  <div class="row" id="captchaarea">
+				  <div class="col-md-4"></div>
+				  <div class="col-md-4">
+                    <input id="txtcaptcha" name="txtcaptcha" type="text" placeholder="551e8" />
+                    <span id="captchaitem"><img src="captcha.php" /></span>
+                     <img src="refresh-icon.png" width="32" height="32" onclick="refreshcaptcha();" style="cursor: pointer;" /> 
+                  </div>
+				  <div class="col-md-4"></div>
+			  </div>
+			  
+			   <div  id="downloadprogress" style="display:none;" class="row">
+					<div class="progress">
+					  <div id="progressbar" class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
+						<span class="sr-only">15% Complete</span>
+					  </div>
+					</div>
+			   </div>
+			   
+			  <div id="downloadarea" style="display:none;" class="row">
+
+                  <a target="_blank" id="browseicon" href="#">
+    				  <div class="col-md-4">
+                          <div class="itemicon">
+                            <img src="folder-icon.png" height="100" width="100" />
+                            <span style="font-size: 18px;">Browse Images Online</span> 
+                          </div>
+                      </div>
+                  
+                  </a>
+                  
+                  <a target="_blank" id="downloadicon" href="#">
+                      <div class="col-md-4">
+                          <div class="itemicon">
+        				    <img src="download.png" height="100" width="100" />
+                            <span style="font-size: 18px;">Download In a Zip File</span>
+                          </div>
+                      </div>
+                  </a>
+				  <div class="col-md-4"></div>
+                  
+			  </div>
+              <div id="resetarea" class="row" style="display: none;">
+                <center><a style="color: white;" href="javascript:resetareas();" >Download Another Page Images</a></center>
+              </div>
+			  
+		  </div>
+        </div>
+      </div>
+	  
+<div id="tags" class="row" style="background-color:grey;color:white;">
+<b><p>Tags</p></b>
+	<a href="http://download-facebook-images.fbtoblog.com?q=Download Facebook images">Download Facebook images</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Download FB images">Download FB images</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Get Facebook images">Get Facebook images</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Copy Facebook images">Copy Facebook images</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Facebook images">Facebook images</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Copy Facebook images in a zip file">Copy Facebook images in a zip file</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Download beautiful images in a zip file">Download beautiful images in a zip file</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Facebook to zip">Facebook to zip</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=Facebook zipper">Facebook zipper</a>,
+	<a href="http://download-facebook-images.fbtoblog.com?q=FB image downloader">FB image downloader</a>
+</div>
+  </body>
+</html>
